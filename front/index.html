@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="bundle.js"></script>
+  </head>
+  <body>
+    <a-scene fullVersion="true" stats="false" vr-mode-ui="enabled: false">
+
+      <a-camera
+        target="#target"
+        distance="2"
+        orbit-controls>
+      </a-camera>
+
+      <a-sky color="#EEE"></a-sky>
+
+      <a-entity id="target"
+        position="0 1 -2"
+        text="align: center; width: 7.5; color: black; value: ARTTU KOSKELA;">
+      </a-entity>
+      <a-entity
+        position="0 0.25 -4"
+        text="align: left; width: 2.5; color: black; wrap-count: 27;
+        value: Direct trade vinyl subway tile waistcoat, freegan authentic tumblr kombucha chicharrones selvage.;">
+      </a-entity>
+
+    </a-scene>
+
+    <script>
+      const scene = document.querySelector('a-scene');
+      scene.setAttribute('fullVersion', window.parent.fullVersion);
+    </script>
+
+  </body>
+</html>

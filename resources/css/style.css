@@ -1,0 +1,420 @@
+* {
+  box-sizing     : border-box;
+  margin         : 0;
+  padding        : 0;
+  color          : #ccc;
+  font-family    : 'Roboto',
+                   sans-serif !important;
+  letter-spacing : 2px;
+}
+
+#fp-nav {
+  top    : 8px;
+  right  : 8px !important;
+  margin : 0 !important;
+}
+
+#fp-nav ul li {
+  margin-top : calc(4px + 1.75vmin) !important;
+}
+
+#fp-nav ul li span {
+  margin-top : 0px !important;
+  background : #ccc !important;
+}
+
+#fp-nav ul li a.active span {
+  visibility : hidden;
+}
+
+#fp-nav ul li .fp-tooltip {
+  width          : auto;
+  color          : #ccc;
+  opacity        : 1;
+  text-transform : uppercase;
+  font-size      : calc(10px + 1vmin);
+  font-weight    : 400;
+  transition     : 1s;
+}
+
+#fp-nav ul li .fp-tooltip:after {
+  content    : '';
+  display    : block;
+  width      : 100%;
+  height     : 1px;
+  margin     : 4px auto;
+  background : #ccc;
+  transform  : scaleX(0);
+  transition : 0.25s;
+}
+
+#fp-nav ul li .fp-tooltip.special:after {
+  content    : '';
+  display    : block;
+  width      : 100%;
+  height     : 1px;
+  margin     : 4px auto;
+  background : rgb(60, 144, 70);
+  transform  : scaleX(0);
+  transition : 0.25s;
+}
+
+#fp-nav ul li .fp-tooltip:hover:after {
+  transform : scaleX(1);
+}
+
+#fp-nav ul li .fp-tooltip.special:hover:after {
+  background : rgb(60, 144, 70);
+  transform  : scaleX(1);
+}
+
+#fp-nav ul li .fp-tooltip.underline:after {
+  transform : scaleX(1);
+}
+
+#fp-nav ul li a span {
+  width : 0;
+}
+
+iframe {
+  width        : 100%;
+  height       : 100%;
+  border-width : 0px;
+}
+
+.touch {
+  position         : absolute;
+  width            : 100%;
+  height           : 100%;
+  opacity          : 0;
+  background-color : black;
+}
+
+div.realtime {
+  width        : 50%;
+  height       : 100%;
+  float        : left;
+  border-color : #ba973d;
+  border-width : 0 10px 0 0;
+  border-style : solid;
+}
+
+div.offline {
+  width        : 50%;
+  height       : 100%;
+  float        : left;
+  border-color : #ba973d;
+  border-width : 0 0 0 10px;
+  border-style : solid;
+}
+
+h1.work {
+  display          : inline-block;
+  position         : absolute;
+  top              : 50%;
+  margin           : 0;
+  margin-left      : 150px;
+  padding          : 10px;
+  color            : #CCC;
+  background-color : rgb(39, 174, 96);
+}
+
+.footer {
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+  height   : 6%;
+}
+
+.info {
+  box-sizing        : border-box;
+  width             : 40%;
+  height            : 100%;
+  float             : left;
+  border-color      : white;
+  border-width      : 1px;
+  border-style      : solid;
+  border-left-width : 0;
+}
+
+.info.social {
+  width : 20%;
+}
+
+p.contact:hover {
+  text-decoration : line-through;
+}
+
+#profile {
+  display  : block;
+  position : relative;
+  left     : 0px;
+}
+
+/* CONTACT */
+
+.contact {
+  position          : relative;
+  width             : 100%;
+  height            : 100%;
+  background-image  : url('../img/checker.png');
+  background-repeat : repeat;
+  background-size   : 0.5vh;
+}
+
+.contact:before {
+  content          : '';
+  position         : absolute;
+  left             : 0;
+  width            : 100%;
+  height           : 100%;
+  opacity          : 0.75;
+  background-image : url('../img/bg_scale.JPG');
+  background-size  : cover;
+}
+
+.contact:after {
+  content          : '';
+  display          : block;
+  position         : absolute;
+  width            : 100%;
+  height           : 100%;
+  background-color : rgb(27, 27, 27);
+  background-color : rgba(27, 27, 27, 0.27);
+}
+
+.border,
+.container {
+  position   : absolute;
+  margin     : auto;
+  overflow   : hidden;
+  box-shadow : 0 0 10px rgba(0, 0, 0, 0.1);
+  transition : 2.0s ease-in-out;
+}
+
+.container {
+  width            : calc(100% - 20px);
+  height           : calc(100% - 20px);
+  margin           : 10px;
+  background-image : url('../img/checker.png');
+}
+
+.border {
+  top              : 0;
+  right            : 0;
+  bottom           : 0;
+  left             : 0;
+  width            : 65vmin;
+  height           : 7.5vmin;
+  opacity          : 0.8;
+  background-color : white;
+}
+
+.profile {
+  position       : relative;
+  top            : -20vmin;
+  width          : 100%;
+  opacity        : 0.9;
+  transition     : 2.0s ease-in-out;
+  pointer-events : none;
+}
+
+.footer {
+  position : absolute;
+  bottom   : 0;
+  width    : 100%;
+  height   : 6vmin;
+}
+
+.info {
+  width             : 40%;
+  height            : 100%;
+  float             : left;
+  border-color      : #fff;
+  border-width      : 1px;
+  border-style      : solid;
+  border-left-width : 0;
+}
+
+p.text {
+  position          : relative;
+  top               : 50%;
+  margin            : 3px;
+  color             : #ccc;
+  text-align        : center;
+  text-transform    : uppercase;
+  font-size         : calc(6px + 1vmin);
+  letter-spacing    : 2px;
+  -ms-transform     : translateY(-50%);
+  -webkit-transform : translateY(-50%);
+  transform         : translateY(-50%);
+  transition        : 0.25s;
+}
+
+p.text:hover {
+  color : #fff;
+}
+
+p.text:after {
+  content    : '';
+  display    : block;
+  width      : 100%;
+  height     : 1px;
+  margin     : 4px auto;
+  background : #ccc;
+  transform  : scaleX(0);
+  transition : 0.25s;
+}
+
+p.text:hover:after {
+  background : #fff;
+  transform  : scaleX(1);
+}
+
+.info.social {
+  width      : 20%;
+  text-align : center;
+}
+
+li {
+  display : inline-block;
+}
+
+.icon {
+  display    : block;
+  position   : relative;
+  top        : 0.5vmin;
+  margin     : 0 calc(1vw - 4px);
+  color      : #ccc;
+  font-size  : 4vmin;
+  transition : 0.25s;
+}
+
+.icon:hover {
+  color : #fff;
+}
+
+/* ABOUT */
+
+div.about_container {
+  width  : 350px;
+  height : 100%;
+  margin : 0 auto;
+}
+
+div.about {
+  position          : absolute;
+  top               : 0;
+  width             : 100%;
+  height            : 100%;
+  background-image  : url('../img/noise.png');
+  background-repeat : repeat;
+  background-size   : 100px;
+}
+
+div.about:before {
+  z-index    : -1;
+  content    : '';
+  position   : absolute;
+  width      : 100%;
+  height     : 100%;
+  background : rgb(148, 112, 54);
+}
+
+h1.about {
+  display        : block;
+  margin         : 175px 0 0 0;
+  padding        : 10px 0;
+  color          : #404040;
+  text-align     : left;
+  font-size      : 4em;
+  font-weight    : 700;
+  letter-spacing : 14px;
+}
+
+p.about {
+  display        : block;
+  text-align     : left;
+  font-size      : 1em;
+  line-height    : 2em;
+  letter-spacing : 2px;
+}
+
+/* OFFLINE */
+
+img.gif {
+  top     : 0;
+  left    : 0;
+  width   : 100%;
+  height  : 100%;
+  margin  : 0;
+  padding : 0;
+}
+
+div.noise {
+  position          : absolute;
+  top               : 0;
+  width             : 100%;
+  height            : 100%;
+  opacity           : 0.1;
+  background-image  : url('../img/noise.png');
+  background-image  : url('../img/checker.png');
+  background-repeat : repeat;
+  background-size   : 0.5vh;
+  z-index: 1;
+}
+
+div.button_wrapper {
+  position   : relative;
+  height     : 0%;
+  text-align : center;
+}
+
+a.button {
+  position         : relative;
+  top              : 50vh;
+  width            : 380px;
+  padding          : 24px 0;
+  color            : #222;
+  border-color     : #ccc;
+  border-width     : 2px;
+  border-style     : solid;
+  border-radius    : 2px;
+  background-color : rgba(255, 255, 255, 0.55);
+  text-transform   : uppercase;
+  font-size        : calc(10px + 2vmin);
+  font-weight      : 300;
+  letter-spacing   : 14px;
+  transition       : 0.25s linear;
+  z-index: 2;
+  text-decoration: none;
+}
+
+a.button:hover {
+  color            : #ccc;
+  border-color     : #000;
+  background-color : rgba(0, 0, 0, 1.0);
+  cursor           : pointer;
+}
+
+@media only screen
+       and (max-width : 1024px) {
+  div.offline,
+  div.realtime {
+    position     : absolute;
+    top          : 0;
+    width        : 100%;
+    height       : 50%;
+    float        : none;
+    border-width : 0;
+  }
+
+  div.realtime {
+    top          : 50%;
+    border-width : 8px 0 0 0;
+  }
+
+  a.button {
+    top : 20vh;
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "arttukoskela",
+  "description": "Homepage for Arttu Koskela",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "budo --live --verbose --port 3000",
+    "front": "budo front/index.js:bundle.js -d front --live --port 3000",
+    "real-time": "budo real-time/index.js:bundle.js -d real-time --live --port 3000",
+    "pre-render": "budo pre-render/index.js:bundle.js -d pre-render --live --port 3000 -- -t [ glslify ]",
+    "ghpages": "ghpages Toseben/arttukoskela"
+  },
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
+  },
+  "devDependencies": {
+    "browserify": "^14.1.0",
+    "budo": "^7.0.0",
+    "ghpages": "0.0.10",
+    "glslify": "^6.0.2"
+  },
+  "dependencies": {
+    "aframe": "^0.5.0",
+    "aframe-look-at-component": "^0.2.0",
+    "aframe-orbit-controls-component": "^1.0.0",
+    "aframe-react": "^3.5.0",
+    "processing-js": "^1.6.6",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  }
+}

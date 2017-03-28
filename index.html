@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Arttu Koskela</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="vendors/css/jquery.fullpage.min.css"/>
+    <link rel="stylesheet" type="text/css" href="vendors/icon/css/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/css/style.css"/>
+
+    <script src="vendors/js/jquery.min.js"></script>
+    <script src="vendors/js/jquery.fullpage.min.js"></script>
+
+    <script type="text/javascript" src="vendors/js/processing.js"></script>
+  </head>
+  <body>
+
+    <div id="fullpage">
+
+        <div class="section">
+          <div class="touch"></div>
+          <!--<iframe id="iframe" src="/arttukoskela/front/index.html"></iframe>-->
+        </div>
+
+        <div class="section active">
+          <div class="about">
+            <div class="about_container">
+              <h1 class="about">About</h1>
+              <p class="about">Flannel cardigan franzen glossier, roof party tumblr lumbersexual. Bicycle
+                rights distillery offal, cliche 8-bit food truck craft beer 90's next level
+                banjo fanny pack semiotics austin. Kitsch tacos raclette wayfarers pickled,
+                chillwave waistcoat 90's 3 wolf moon cardigan raw denim fingerstache. Drinking
+                vinegar waistcoat fixie vinyl farm-to-table. Seitan kogi actually, vaporware
+                echo park tacos meh vegan. Lyft affogato williamsburg pop-up, mlkshk microdosing
+                deep v next level pitchfork meggings post-ironic. Hella DIY cardigan kitsch
+                try-hard tousled lomo bushwick offal sustainable.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="noise"></div>
+
+          <div class="realtime">
+            <div class="button_wrapper">
+              <a href="realtime" class="button realtime" type="button">&nbsp;Real|time&raquo;</a>
+            </div>
+            <img class="gif" src="./resources/img/bg_6.JPG" style="object-fit: cover;">
+          </div>
+
+          <div class="offline">
+            <div class="button_wrapper">
+              <a href="prerender" class="button offline" type="button">&nbsp;Pre|render&raquo;</a>
+            </div>
+            <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0"></canvas>
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <div class="contact">
+            <div class="border">
+              <div class="container">
+                <img class="profile" src="./resources/img/profile.jpg" />
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div class="info address">
+              <p class="text">
+                arekoskela@gmail.com
+              </p>
+            </div>
+            <div class="info social">
+              <ul>
+                <li><a target="_blank" href="https://www.linkedin.com/in/arttukoskela"><i class="icon-linkedin icon"></i></a></li>
+                <li><a target="_blank" href="https://github.com/Toseben"><i class="icon-github-circled icon"></i></a></li>
+              </ul>
+            </div>
+            <div class="info number">
+              <p class="text">
+                +358 50 493 2055
+              </p>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <script>
+      $(document).ready(function() {
+        // Colors
+        const colors = { Even: { Normal: '#ccc', Hover: '#fff'}, Odd: { Normal: 'rgb(60, 144, 70)', Hover: '#fff'} };
+
+        $('#fullpage').fullpage({
+          navigation: true,
+          navigationTooltips: ['Front', 'About', 'Work', 'Contact'],
+
+          // Scrolling
+          keyboardScrolling: false,
+
+          // Events
+          onLeave: function(index, nextIndex, direction) {
+            const next = $('#fp-nav').find('li').eq(nextIndex - 1).find('div');
+            const prev = $('#fp-nav').find('li').eq(index - 1).find('div');
+            next.addClass('underline');
+            prev.removeClass('underline');
+            if (nextIndex === 4) {
+              //console.log('moi');
+              /*const iframes = document.querySelectorAll('iframe');
+              for (var i = 0; i < iframes.length; i++) {
+                  iframes[i].parentNode.removeChild(iframes[i]);
+              }*/
+            }
+
+            const tips = $('#fp-nav').find('.fp-tooltip');
+            const span = $('#fp-nav').find('span');
+
+            if (nextIndex % 2 == 0) {
+              tips.removeClass('special');
+              tips.css('color', colors.Even.Normal);
+              span.css('cssText', 'background:' + colors.Even.Normal + '!important;');
+            } else {
+              tips.addClass('special');
+              tips.css('color', colors.Odd.Normal);
+              span.css('cssText', 'background:' + colors.Odd.Normal + '!important;');
+            }
+          },
+
+          afterLoad: function(anchorLink, index) {
+            if (index === 4) {
+              animClip();
+            }
+          }
+        });
+
+        $.fn.fullpage.setMouseWheelScrolling(false);
+      });
+
+      // Mobile Check
+      this.fullVersion = true;
+      if (/Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)) {
+      	this.fullVersion = false;
+      }
+
+      //setTimeout(animClip, 1000);
+      function animClip() {
+        $('.profile').css('top', '0');
+        $('.border').css('height', '65vmin');
+        $('.container').css('-webkit-clip-path', 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)');
+        $('.border').css('-webkit-clip-path', 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)');
+      }
+
+      window.addEventListener('resize', function(){
+        width = window.innerWidth
+        height = window.innerHeight;
+        if (width <= 1024) {
+          Processing.getInstanceById('canvas0').size(width, height * 0.5);
+        } else {
+          Processing.getInstanceById('canvas0').size(width * 0.5, height);
+        }
+      });
+
+    </script>
+
+  </body>
+</html>
