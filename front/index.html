@@ -1,18 +1,42 @@
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <script src="./components/aframe.min.js"></script>
     <script src="bundle.js"></script>
   </head>
   <body>
     <a-scene fullVersion="true" stats="false" vr-mode-ui="enabled: false">
 
-      <a-camera
-        target="#target"
-        distance="2"
-        orbit-controls>
+      <a-camera target="#target" distance="2" orbit-controls>
+        <a-plane
+          scale="6 1 1"
+          position="0 1.4 -1.25"
+          rotation="0 0 25"
+          material="shader: flat; color: #ba7b3d">
+        </a-plane>
+
+        <a-plane
+          scale="6 1 1"
+          position="0 1.6 -1.2"
+          rotation="0 0 25"
+          material="shader: flat; color: #ba973d">
+        </a-plane>
+
+        <a-plane
+          scale="6 1 1"
+          position="0 -1.4 -1.25"
+          rotation="0 0 25"
+          material="shader: flat; color: #3c9046">
+        </a-plane>
+
+        <a-plane
+          scale="6 1 1"
+          position="0 -1.6 -1.2"
+          rotation="0 0 25"
+          material="shader: flat; color: #33993F">
+        </a-plane>
       </a-camera>
 
-      <a-sky color="#EEE"></a-sky>
+      <a-sky color="#eee"></a-sky>
 
       <a-entity id="target"
         position="0 1 -2"
@@ -28,6 +52,7 @@
 
     <script>
       const scene = document.querySelector('a-scene');
+      window.parent.fullVersion = true;
       scene.setAttribute('fullVersion', window.parent.fullVersion);
     </script>
 

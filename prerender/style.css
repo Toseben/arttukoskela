@@ -39,10 +39,20 @@
   transition         : all .3s ease-in;
 }
 
+.overlay-wrap:before {
+  content          : '';
+  position         : absolute;
+  width            : 100%;
+  height           : 100%;
+  background-image  : url('../resources/img/noise.png');
+  background-repeat : repeat;
+  background-size   : 20vh;
+}
+
 .overlay-text {
   display            : inline-block;
   position           : absolute;
-  bottom             : 60px;
+  bottom             : 2.5vw;
   width              : 100%;
   float              : left;
   margin-left        : 0px;
@@ -57,23 +67,23 @@
 
 .overlay-text h1 {
   text-transform : uppercase;
-  font-size      : calc(10px + 1vmin);
+  font-size      : calc(6px + 2vmin);
   font-weight    : 400;
+  margin-bottom: 4px;
 }
 
-.overlay-text p {
-  text-transform    : uppercase;
-  font-size         : calc(6px + 1vmin);
+p {
+  text-transform : uppercase;
+  font-size      : calc(6px + 1vmin);
   font-weight    : 100;
-
 }
 
 .work-item:hover .overlay-wrap {
-  background : rgba(30, 30, 30, 0.4);
+  background : rgba(186, 151, 61, 0.5) !important;
 }
 
 .work-item .overlay-wrap:hover .overlay-text {
-  margin-left        : 50px;
+  margin-left        : 2.5vw;
   opacity            : 1;
   -moz-transition    : all .4s ease-in-out;
   -o-transition      : all .4s ease-in-out;
@@ -87,22 +97,12 @@
     width : 100%;
   }
 
-  .overlay-wrap {
-    background : rgba(30, 30, 30, 0.4);
-  }
-
-  .work-item:hover .overlay-wrap {
-    background : rgba(30, 30, 30, 0.0);
-  }
-
   .overlay-text h1 {
-    font-size : 32px;
-    color: #ccc;
+    font-size : calc(6px + 2vmin);
   }
 
   .overlay-text p {
-    font-size : 18px;
-    color: #ccc;
+    font-size : calc(6px + 1vmin);
   }
 
   .overlay-text {
@@ -118,12 +118,12 @@
     padding     : 0 50px;
   }
 
-  .overlay-wrap:hover h1, .overlay-wrap:hover p {
+  .overlay-wrap:hover h1,
+  .overlay-wrap:hover p {
+    color              : #fff;
     -moz-transition    : all .4s ease-in-out;
     -o-transition      : all .4s ease-in-out;
     -webkit-transition : all .4s ease-in-out;
     transition         : all .4s ease-in-out;
-    color: #fff;
   }
-
 }

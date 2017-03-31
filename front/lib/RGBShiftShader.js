@@ -3,7 +3,9 @@ module.exports = THREE.RGBShiftShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"u_time":    { value: 0.0 }
+		"u_time": { value: 0.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"aspect": { type: "float" }
 
 	},
 
@@ -24,6 +26,8 @@ module.exports = THREE.RGBShiftShader = {
 
 		"uniform sampler2D tDiffuse;",
 		"uniform float u_time;",
+		"uniform float aspect;",
+		"uniform vec2 mouse;",
 		"varying vec2 vUv;",
 
 		// RANDOM
@@ -62,8 +66,8 @@ module.exports = THREE.RGBShiftShader = {
 		                    "-sin(0.5), cos(0.5));",
 		    "for (int i = 0; i < NUM_OCTAVES; ++i) {",
 		        "v += a * noise(_st);",
-		        "_st = rot * _st * 2.0 + shift;",
-		        "a *= 0.6;",
+		        "_st = rot * _st * 2.4 + shift;",
+		        "a *= 0.525;",
 		    "}",
 		    "return v;",
 		"}",
@@ -82,14 +86,23 @@ module.exports = THREE.RGBShiftShader = {
 	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time);",
 	    "r.y = fbm( vUv + 1.0 * q + vec2(0.25, 0.5) + 0.025 * u_time);",
 
-			"float offset = fbm(vUv + r);",
+			"vec2 position = vUv * vec2(aspect, 1.0);",
+			"position -= mouse * vec2(aspect, 1.0);",
+			"float mask = length(position) * 4.0;",
+			"mask = smoothstep(-0.2, 1.0, mask);",
+
+			"float offset = fbm(vUv + r * (mask + 0.1));",
 			"offset = offset * 2.0 - 1.0;",
+			"offset *= mask + 0.4;",
 			"gl_FragColor = vec4(vec3(offset), 1.0);",
+			"gl_FragColor = vec4(vec3(mask), 1.0);",
 			"offset *= 0.05;",
 			"vec4 cr = texture2D(tDiffuse, vUv + offset * 1.25);",
 			"vec4 cga = texture2D(tDiffuse, vUv + offset);",
 			"vec4 cb = texture2D(tDiffuse, vUv + offset * 0.75);",
 			"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+
+
 
 		"}"
 

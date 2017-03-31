@@ -13,15 +13,30 @@ THREE.HorizontalBlurShader = require('../lib/HorizontalBlurShader');
 AFRAME.registerSystem('deform', {
 
   init: function () {
+    const entity = this;
     const sceneEl = this.sceneEl;
+    var width = window.innerWidth;
+    var height = window.innerHeight;
 
     if (!sceneEl.hasLoaded) {
       sceneEl.addEventListener('render-target-loaded', this.init.bind(this));
       return;
     }
 
-    //var width = window.innerWidth;
-    //var height = window.innerHeight;
+    window.addEventListener('mousemove', onMouseMove, false);
+    window.addEventListener('resize', function() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      entity.rgbEffect.uniforms.aspect.value = width / height;
+    });
+
+    function onMouseMove(event) {
+      var xDelta = event.clientX / width;
+      var yDelta = 1 - event.clientY / height;
+      entity.rgbEffect.uniforms.mouse.value = new THREE.Vector2( xDelta, yDelta );
+      verticalBlur.uniforms.mouse.value = new THREE.Vector2( xDelta, yDelta );
+      horizontalBlur.uniforms.mouse.value = new THREE.Vector2( xDelta, yDelta );
+    }
 
     const scene = sceneEl.object3D;
     const renderer = sceneEl.renderer;
@@ -31,11 +46,14 @@ AFRAME.registerSystem('deform', {
     var renderPass = new THREE.RenderPass(scene, camera);
     // BLUR
     var verticalBlur = new THREE.ShaderPass( THREE.VerticalBlurShader );
+    verticalBlur.uniforms.aspect.value = width / height;
     //verticalBlur.uniforms.v.value = 1.0 / width;
     var horizontalBlur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
+    horizontalBlur.uniforms.aspect.value = width / height;
     //verticalBlur.uniforms.v.value = 1.0 / height;
     // DISTORT
     this.rgbEffect = new THREE.ShaderPass( THREE.RGBShiftShader );
+    this.rgbEffect.uniforms.aspect.value = width / height;
     this.rgbEffect.renderToScreen = true;
 
     // Create Composer
@@ -309,7 +327,9 @@ module.exports = THREE.HorizontalBlurShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"h":        { value: 1.0 / 1024.0 }
+		"h": { value: 1.0 / 512.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"aspect": { type: "float" }
 
 	},
 
@@ -330,22 +350,30 @@ module.exports = THREE.HorizontalBlurShader = {
 
 		"uniform sampler2D tDiffuse;",
 		"uniform float h;",
+		"uniform float aspect;",
+		"uniform vec2 mouse;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
+			"vec2 position = vUv * vec2(aspect, 1.0);",
+			"position -= mouse * vec2(aspect, 1.0);",
+			"float mask = length(position) * 4.0;",
+			"mask = smoothstep(0.0, 1.0, mask);",
+
+			"float mult = h * mask;",
 			"vec4 sum = vec4( 0.0 );",
 
-			"sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * h, vUv.y ) ) * 0.051;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * h, vUv.y ) ) * 0.0918;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * h, vUv.y ) ) * 0.12245;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * h, vUv.y ) ) * 0.1531;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * mult, vUv.y ) ) * 0.051;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * mult, vUv.y ) ) * 0.0918;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * mult, vUv.y ) ) * 0.12245;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * mult, vUv.y ) ) * 0.1531;",
 			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y ) ) * 0.1633;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * h, vUv.y ) ) * 0.1531;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * h, vUv.y ) ) * 0.12245;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * h, vUv.y ) ) * 0.0918;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * h, vUv.y ) ) * 0.051;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * mult, vUv.y ) ) * 0.1531;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * mult, vUv.y ) ) * 0.12245;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * mult, vUv.y ) ) * 0.0918;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * mult, vUv.y ) ) * 0.051;",
 
 			"gl_FragColor = sum;",
 
@@ -361,7 +389,9 @@ module.exports = THREE.RGBShiftShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"u_time":    { value: 0.0 }
+		"u_time": { value: 0.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"aspect": { type: "float" }
 
 	},
 
@@ -382,6 +412,8 @@ module.exports = THREE.RGBShiftShader = {
 
 		"uniform sampler2D tDiffuse;",
 		"uniform float u_time;",
+		"uniform float aspect;",
+		"uniform vec2 mouse;",
 		"varying vec2 vUv;",
 
 		// RANDOM
@@ -420,8 +452,8 @@ module.exports = THREE.RGBShiftShader = {
 		                    "-sin(0.5), cos(0.5));",
 		    "for (int i = 0; i < NUM_OCTAVES; ++i) {",
 		        "v += a * noise(_st);",
-		        "_st = rot * _st * 2.0 + shift;",
-		        "a *= 0.6;",
+		        "_st = rot * _st * 2.4 + shift;",
+		        "a *= 0.525;",
 		    "}",
 		    "return v;",
 		"}",
@@ -440,14 +472,23 @@ module.exports = THREE.RGBShiftShader = {
 	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time);",
 	    "r.y = fbm( vUv + 1.0 * q + vec2(0.25, 0.5) + 0.025 * u_time);",
 
-			"float offset = fbm(vUv + r);",
+			"vec2 position = vUv * vec2(aspect, 1.0);",
+			"position -= mouse * vec2(aspect, 1.0);",
+			"float mask = length(position) * 4.0;",
+			"mask = smoothstep(-0.2, 1.0, mask);",
+
+			"float offset = fbm(vUv + r * (mask + 0.1));",
 			"offset = offset * 2.0 - 1.0;",
+			"offset *= mask + 0.4;",
 			"gl_FragColor = vec4(vec3(offset), 1.0);",
+			"gl_FragColor = vec4(vec3(mask), 1.0);",
 			"offset *= 0.05;",
 			"vec4 cr = texture2D(tDiffuse, vUv + offset * 1.25);",
 			"vec4 cga = texture2D(tDiffuse, vUv + offset);",
 			"vec4 cb = texture2D(tDiffuse, vUv + offset * 0.75);",
 			"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
+
+
 
 		"}"
 
@@ -587,7 +628,9 @@ module.exports = THREE.VerticalBlurShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"v":        { value: 1.0 / 1024.0 }
+		"v": { value: 1.0 / 512.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"aspect": { type: "float" }
 
 	},
 
@@ -608,22 +651,30 @@ module.exports = THREE.VerticalBlurShader = {
 
 		"uniform sampler2D tDiffuse;",
 		"uniform float v;",
+		"uniform float aspect;",
+		"uniform vec2 mouse;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
+			"vec2 position = vUv * vec2(aspect, 1.0);",
+			"position -= mouse * vec2(aspect, 1.0);",
+			"float mask = length(position) * 4.0;",
+			"mask = smoothstep(0.0, 1.0, mask);",
+
+			"float mult = v * mask;",
 			"vec4 sum = vec4( 0.0 );",
 
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 4.0 * v ) ) * 0.051;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 3.0 * v ) ) * 0.0918;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 2.0 * v ) ) * 0.12245;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 1.0 * v ) ) * 0.1531;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 4.0 * mult ) ) * 0.051;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 3.0 * mult ) ) * 0.0918;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 2.0 * mult ) ) * 0.12245;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 1.0 * mult ) ) * 0.1531;",
 			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y ) ) * 0.1633;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 1.0 * v ) ) * 0.1531;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 2.0 * v ) ) * 0.12245;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 3.0 * v ) ) * 0.0918;",
-			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 4.0 * v ) ) * 0.051;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 1.0 * mult ) ) * 0.1531;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 2.0 * mult ) ) * 0.12245;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 3.0 * mult ) ) * 0.0918;",
+			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y + 4.0 * mult ) ) * 0.051;",
 
 			"gl_FragColor = sum;",
 
