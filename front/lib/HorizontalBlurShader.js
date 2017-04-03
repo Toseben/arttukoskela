@@ -3,8 +3,9 @@ module.exports = THREE.HorizontalBlurShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"h": { value: 1.0 / 512.0 },
-		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"h": { value: 1.0 / 512.0 * 1.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.5 ) },
+		"size": { type: "v2" },
 		"aspect": { type: "float" }
 
 	},
@@ -28,17 +29,28 @@ module.exports = THREE.HorizontalBlurShader = {
 		"uniform float h;",
 		"uniform float aspect;",
 		"uniform vec2 mouse;",
+		"uniform vec2 size;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
-			"vec2 position = vUv * vec2(aspect, 1.0);",
-			"position -= mouse * vec2(aspect, 1.0);",
-			"float mask = length(position) * 4.0;",
+			"vec2 stretchUV = vUv * vec2(aspect, 1.0);",
+			"vec2 offsetPos = stretchUV - mouse * vec2(aspect, 1.0);",
+			"float mask = length(offsetPos) * 3.0;",
 			"mask = smoothstep(0.0, 1.0, mask);",
 
-			"float mult = h * mask;",
+			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
+			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+
+			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
+			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
+			"float staticMask = length(staticPos) * 6.0 * distFromCenter;",
+			"staticMask = smoothstep(-0.2, 1.0, staticMask);",
+
+			"mask = min(mask, staticMask);",
+
+			"float mult = h * mask * (1.0 / clamp(aspect, 0.5, 1.0));",
 			"vec4 sum = vec4( 0.0 );",
 
 			"sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * mult, vUv.y ) ) * 0.051;",

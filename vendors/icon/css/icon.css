@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'icon';
-  src: url('../font/icon.eot?4266662');
-  src: url('../font/icon.eot?4266662#iefix') format('embedded-opentype'),
-       url('../font/icon.woff2?4266662') format('woff2'),
-       url('../font/icon.woff?4266662') format('woff'),
-       url('../font/icon.ttf?4266662') format('truetype'),
-       url('../font/icon.svg?4266662#icon') format('svg');
+  src: url('../font/icon.eot?49491077');
+  src: url('../font/icon.eot?49491077#iefix') format('embedded-opentype'),
+       url('../font/icon.woff2?49491077') format('woff2'),
+       url('../font/icon.woff?49491077') format('woff'),
+       url('../font/icon.ttf?49491077') format('truetype'),
+       url('../font/icon.svg?49491077#icon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'icon';
-    src: url('../font/icon.svg?4266662#icon') format('svg');
+    src: url('../font/icon.svg?49491077#icon') format('svg');
   }
 }
 */
@@ -55,6 +55,7 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
+.icon-down-open:before { content: '\e801'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
 .icon-github-circled:before { content: '\f09b'; } /* '' */
 .icon-linkedin:before { content: '\f0e1'; } /* '' */

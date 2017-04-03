@@ -1,52 +1,150 @@
 <html>
   <head>
     <script src="./components/aframe.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.0.0/nunjucks.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@^3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://rawgit.com/ngokevin/aframe-animation-component/master/dist/aframe-animation-component.min.js"></script> -->
+    <script src="./components/nunjucks.min.js"></script>
+    <script src="./components/aframe-template-component.min.js"></script>
+    <script src="./components/aframe-animation-component.min.js"></script>
     <script src="bundle.js"></script>
   </head>
   <body>
+
+    <script>
+
+    function fit(num, oldMin, oldMax, newMin, newMax) {
+      var oldRange = (oldMax - oldMin);
+      var newRange = (newMax - newMin);
+      var scaledNum = (((num - oldMin) * newRange) / oldRange) + newMin;
+      return scaledNum;
+    }
+
+    function clamp(num, min, max) {
+      return Math.max( min, Math.min ( num, max ));
+    }
+
+    AFRAME.registerComponent('letter', {
+
+      init: function() {
+        const entity = this.el;
+        const id = this.el.getAttribute('id');
+        const sign = id > 4 ? 1 : -1;
+        const posX = (id - 5.5) * 0.225 + sign * 0.075;
+        var depth = -2;
+        entity.setAttribute('position', { x: posX, y: 0, z: depth });
+
+        // FROM
+        fromPos = [posX, 0, depth];
+        fromPos = fromPos.join(" ");
+
+        // TO
+        const pushMult = Math.abs(((id / 11 + 0.5) % 1) - 0.5);
+        depth += 0.2 + 1.4 * pushMult;
+        toPos = [posX, 0, depth];
+        toPos = toPos.join(" ");
+        entity.setAttribute('animation', { from: fromPos, to: toPos });
+
+        // Offset Letter Trigger
+        setTimeout(function() {
+          // Trigger First Time Immediate
+          entity.emit('animate');
+          // Trigger
+          setInterval(function() {
+            entity.emit('animate');
+          }, 576 * 12);
+        }, 576 * id + 1000);
+      }
+    });
+
+    AFRAME.registerComponent('aspect', {
+
+      init: function() {
+        const entity = this.el;
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        var aspect = width / height;
+        var posZ = fit(aspect, 0.4, 2, 1, 0);
+        posZ = Math.pow(posZ, 4.0);
+        posZ = fit(posZ, 0, 1, -0.5, 3);
+        posZ = clamp(posZ, -0.5, 3) + 3;
+        entity.setAttribute('position', { x: 0, y: 0, z: posZ });
+
+        window.addEventListener('mousemove', onMouseMove, false);
+
+        function onMouseMove(event) {
+          var xDelta = (event.clientX / width - 0.5);
+          var yDelta = (event.clientY / height - 0.5);
+          var currentPos = entity.getAttribute('position');
+          entity.parentElement.setAttribute('rotation', { x: xDelta * 5, y: yDelta * 5, z: 0 });
+        }
+
+        window.addEventListener('resize', function() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          aspect = width / height;
+          var posZ = fit(aspect, 0.4, 2, 1, 0);
+          posZ = Math.pow(posZ, 4.0);
+          posZ = fit(posZ, 0, 1, -0.5, 3);
+          posZ = clamp(posZ, -0.5, 3) + 3;
+          entity.setAttribute('position', { x: 0, y: 0, z: posZ });
+        });
+
+      }
+    });
+
+    </script>
+
     <a-scene fullVersion="true" stats="false" vr-mode-ui="enabled: false">
 
-      <a-camera target="#target" distance="2" orbit-controls>
-        <a-plane
-          scale="6 1 1"
-          position="0 1.4 -1.25"
-          rotation="0 0 25"
-          material="shader: flat; color: #ba7b3d">
-        </a-plane>
+      <a-assets>
+        <a-mixin id="letter" text="align: center; width: 7.5; color: #ccc"></a-mixin>
+        <a-mixin id="push" animation="property: position; easing: easeInOutExpo; startEvents: animate; dur: 500; dir: alternate"></a-mixin>
+      </a-assets>
 
-        <a-plane
-          scale="6 1 1"
-          position="0 1.6 -1.2"
-          rotation="0 0 25"
-          material="shader: flat; color: #ba973d">
-        </a-plane>
-
-        <a-plane
-          scale="6 1 1"
-          position="0 -1.4 -1.25"
-          rotation="0 0 25"
-          material="shader: flat; color: #3c9046">
-        </a-plane>
-
-        <a-plane
-          scale="6 1 1"
-          position="0 -1.6 -1.2"
-          rotation="0 0 25"
-          material="shader: flat; color: #33993F">
-        </a-plane>
-      </a-camera>
-
-      <a-sky color="#eee"></a-sky>
-
-      <a-entity id="target"
-        position="0 1 -2"
-        text="align: center; width: 7.5; color: black; value: ARTTU KOSKELA;">
+      <a-entity position="0 0 -3">
+        <a-entity camera aspect></a-entity>
       </a-entity>
+      <a-sky color="#225C56"></a-sky>
+
+      <a-entity letter class="letter" id="0" mixin="letter push" text="value: A"></a-entity>
+      <a-entity letter class="letter" id="1" mixin="letter push" text="value: R"></a-entity>
+      <a-entity letter class="letter" id="3" mixin="letter push" text="value: T;"></a-entity>
+      <a-entity letter class="letter" id="2" mixin="letter push" text="value: T;"></a-entity>
+      <a-entity letter class="letter" id="4" mixin="letter push" text="value: U;"></a-entity>
+      <a-entity letter class="letter" id="5" mixin="letter push" text="value: K;"></a-entity>
+      <a-entity letter class="letter" id="6" mixin="letter push" text="value: O;"></a-entity>
+      <a-entity letter class="letter" id="7" mixin="letter push" text="value: S;"></a-entity>
+      <a-entity letter class="letter" id="8" mixin="letter push" text="value: K;"></a-entity>
+      <a-entity letter class="letter" id="9" mixin="letter push" text="value: E;"></a-entity>
+      <a-entity letter class="letter" id="10" mixin="letter push" text="value: L;"></a-entity>
+      <a-entity letter class="letter" id="11" mixin="letter push" text="value: A;"></a-entity>
+
       <a-entity
-        position="0 0.25 -4"
-        text="align: left; width: 2.5; color: black; wrap-count: 27;
-        value: Direct trade vinyl subway tile waistcoat, freegan authentic tumblr kombucha chicharrones selvage.;">
+        position="0 -0.5 -3"
+        text="align: center; width: 5.0; color: #cc; wrap-count: 50;
+        value: WebGL Expert | VFX Technical Director;">
       </a-entity>
+
+      <a-sphere position="0 0 -4" material="shader: flat; color: #101010"></a-sphere>
+
+      <a-assets>
+        <script id="kaleido_scope" type="text/x-nunjucks-template">
+          {% for x in range(-8, 9) %}
+            {% for y in range(-9, 10) %}
+              <a-entity rotation="35 0 0" position="{{x * 1.45 + y % 2 * 0.725}} {{y * 1.25}} 0">
+                <a-box
+                  material="shader: standard; color: #947036"
+                  rotation="0 45 0" scale="0.33 0.33 0.33">
+                </a-box>
+              </a-entity>
+            {% endfor %}
+          {% endfor %}
+        </script>
+      </a-assets>
+
+      <a-entity position="0 0 -6.5" id="kaleido_GRP" template="src: #kaleido_scope"></a-entity>
+
 
     </a-scene>
 

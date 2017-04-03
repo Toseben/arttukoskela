@@ -27,7 +27,11 @@ AFRAME.registerSystem('deform', {
     window.addEventListener('resize', function() {
       width = window.innerWidth;
       height = window.innerHeight;
-      entity.rgbEffect.uniforms.aspect.value = width / height;
+      composer.setSize(width, height);
+      const aspect = width / height;
+      entity.rgbEffect.uniforms.aspect.value = aspect;
+      verticalBlur.uniforms.aspect.value = aspect;
+      horizontalBlur.uniforms.aspect.value = aspect;
     });
 
     function onMouseMove(event) {
@@ -47,10 +51,10 @@ AFRAME.registerSystem('deform', {
     // BLUR
     var verticalBlur = new THREE.ShaderPass( THREE.VerticalBlurShader );
     verticalBlur.uniforms.aspect.value = width / height;
-    //verticalBlur.uniforms.v.value = 1.0 / width;
+    verticalBlur.uniforms.size.value = new THREE.Vector2( width, height );
     var horizontalBlur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
     horizontalBlur.uniforms.aspect.value = width / height;
-    //verticalBlur.uniforms.v.value = 1.0 / height;
+    horizontalBlur.uniforms.size.value = new THREE.Vector2( width, height );
     // DISTORT
     this.rgbEffect = new THREE.ShaderPass( THREE.RGBShiftShader );
     this.rgbEffect.uniforms.aspect.value = width / height;
@@ -327,8 +331,9 @@ module.exports = THREE.HorizontalBlurShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"h": { value: 1.0 / 512.0 },
-		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"h": { value: 1.0 / 512.0 * 1.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.5 ) },
+		"size": { type: "v2" },
 		"aspect": { type: "float" }
 
 	},
@@ -352,17 +357,28 @@ module.exports = THREE.HorizontalBlurShader = {
 		"uniform float h;",
 		"uniform float aspect;",
 		"uniform vec2 mouse;",
+		"uniform vec2 size;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
-			"vec2 position = vUv * vec2(aspect, 1.0);",
-			"position -= mouse * vec2(aspect, 1.0);",
-			"float mask = length(position) * 4.0;",
+			"vec2 stretchUV = vUv * vec2(aspect, 1.0);",
+			"vec2 offsetPos = stretchUV - mouse * vec2(aspect, 1.0);",
+			"float mask = length(offsetPos) * 3.0;",
 			"mask = smoothstep(0.0, 1.0, mask);",
 
-			"float mult = h * mask;",
+			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
+			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+
+			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
+			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
+			"float staticMask = length(staticPos) * 6.0 * distFromCenter;",
+			"staticMask = smoothstep(-0.2, 1.0, staticMask);",
+
+			"mask = min(mask, staticMask);",
+
+			"float mult = h * mask * (1.0 / clamp(aspect, 0.5, 1.0));",
 			"vec4 sum = vec4( 0.0 );",
 
 			"sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * mult, vUv.y ) ) * 0.051;",
@@ -390,7 +406,7 @@ module.exports = THREE.RGBShiftShader = {
 
 		"tDiffuse": { value: null },
 		"u_time": { value: 0.0 },
-		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.5 ) },
 		"aspect": { type: "float" }
 
 	},
@@ -465,30 +481,38 @@ module.exports = THREE.RGBShiftShader = {
 
 			"vec2 q = vec2(0.0);",
 			"float scale = 8.0;",
-			"q.x = fbm( vUv * scale );",
-			"q.y = fbm( vUv * scale - vec2(1.0));",
+			"vec2 stretchUV = vUv * vec2(aspect, 1.0);",
+			"q.x = fbm( stretchUV * scale);",
+			"q.y = fbm( stretchUV * scale - vec2(1.0));",
 
 			"vec2 r = vec2(0.0);",
-	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time);",
+	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time + 52.7);",
 	    "r.y = fbm( vUv + 1.0 * q + vec2(0.25, 0.5) + 0.025 * u_time);",
 
 			"vec2 position = vUv * vec2(aspect, 1.0);",
 			"position -= mouse * vec2(aspect, 1.0);",
-			"float mask = length(position) * 4.0;",
-			"mask = smoothstep(-0.2, 1.0, mask);",
+			"float mask = length(position) * 3.0;",
+			"mask = smoothstep(-0.1, 1.0, mask);",
+
+			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
+			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+
+			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
+			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
+			"float staticMask = length(staticPos) * 6.0 * distFromCenter;",
+			"staticMask = smoothstep(-0.4, 1.0, staticMask);",
+
+			"mask = min(mask, staticMask);",
 
 			"float offset = fbm(vUv + r * (mask + 0.1));",
 			"offset = offset * 2.0 - 1.0;",
 			"offset *= mask + 0.4;",
-			"gl_FragColor = vec4(vec3(offset), 1.0);",
-			"gl_FragColor = vec4(vec3(mask), 1.0);",
-			"offset *= 0.05;",
+			"gl_FragColor = vec4(vec3(abs(offset) * 2.0), 1.0);",
+			"offset *= 0.05 * 1.0;",
 			"vec4 cr = texture2D(tDiffuse, vUv + offset * 1.25);",
 			"vec4 cga = texture2D(tDiffuse, vUv + offset);",
 			"vec4 cb = texture2D(tDiffuse, vUv + offset * 0.75);",
 			"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
-
-
 
 		"}"
 
@@ -628,8 +652,9 @@ module.exports = THREE.VerticalBlurShader = {
 	uniforms: {
 
 		"tDiffuse": { value: null },
-		"v": { value: 1.0 / 512.0 },
-		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"v": { value: 1.0 / 512.0 * 1.0 },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.5 ) },
+		"size": { type: "v2" },
 		"aspect": { type: "float" }
 
 	},
@@ -653,17 +678,28 @@ module.exports = THREE.VerticalBlurShader = {
 		"uniform float v;",
 		"uniform float aspect;",
 		"uniform vec2 mouse;",
+		"uniform vec2 size;",
 
 		"varying vec2 vUv;",
 
 		"void main() {",
 
-			"vec2 position = vUv * vec2(aspect, 1.0);",
-			"position -= mouse * vec2(aspect, 1.0);",
-			"float mask = length(position) * 4.0;",
+			"vec2 stretchUV = vUv * vec2(aspect, 1.0);",
+			"vec2 offsetPos = stretchUV - mouse * vec2(aspect, 1.0);",
+			"float mask = length(offsetPos) * 3.0;",
 			"mask = smoothstep(0.0, 1.0, mask);",
 
-			"float mult = v * mask;",
+			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
+			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+
+			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
+			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
+			"float staticMask = length(staticPos) * 6.0 * distFromCenter;",
+			"staticMask = smoothstep(-0.2, 1.0, staticMask);",
+
+			"mask = min(mask, staticMask);",
+
+			"float mult = v * mask * (1.0 / clamp(aspect, 0.5, 1.0));",
 			"vec4 sum = vec4( 0.0 );",
 
 			"sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y - 4.0 * mult ) ) * 0.051;",

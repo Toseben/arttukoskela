@@ -1,7 +1,7 @@
 SinWave sinWave;
 SinWave[] sinWaves = new SinWave[50];
 color[] colorOptions = {
-  color(242, 242, 242, 100), color(193, 166, 54, 100), color(125, 92,7, 100), color(5, 219, 242, 100), color(89, 75, 70, 100)
+  color(242, 242, 242, 100), color(193, 166, 54, 100), color(125, 92, 7, 100), color(5, 219, 242, 100), color(89, 75, 70, 100)
 };
 
 void setup() {

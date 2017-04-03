@@ -26,7 +26,11 @@ AFRAME.registerSystem('deform', {
     window.addEventListener('resize', function() {
       width = window.innerWidth;
       height = window.innerHeight;
-      entity.rgbEffect.uniforms.aspect.value = width / height;
+      composer.setSize(width, height);
+      const aspect = width / height;
+      entity.rgbEffect.uniforms.aspect.value = aspect;
+      verticalBlur.uniforms.aspect.value = aspect;
+      horizontalBlur.uniforms.aspect.value = aspect;
     });
 
     function onMouseMove(event) {
@@ -46,10 +50,10 @@ AFRAME.registerSystem('deform', {
     // BLUR
     var verticalBlur = new THREE.ShaderPass( THREE.VerticalBlurShader );
     verticalBlur.uniforms.aspect.value = width / height;
-    //verticalBlur.uniforms.v.value = 1.0 / width;
+    verticalBlur.uniforms.size.value = new THREE.Vector2( width, height );
     var horizontalBlur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
     horizontalBlur.uniforms.aspect.value = width / height;
-    //verticalBlur.uniforms.v.value = 1.0 / height;
+    horizontalBlur.uniforms.size.value = new THREE.Vector2( width, height );
     // DISTORT
     this.rgbEffect = new THREE.ShaderPass( THREE.RGBShiftShader );
     this.rgbEffect.uniforms.aspect.value = width / height;

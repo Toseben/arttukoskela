@@ -4,7 +4,7 @@ module.exports = THREE.RGBShiftShader = {
 
 		"tDiffuse": { value: null },
 		"u_time": { value: 0.0 },
-		"mouse": { value: new THREE.Vector2( 0.5, 0.75 ) },
+		"mouse": { value: new THREE.Vector2( 0.5, 0.5 ) },
 		"aspect": { type: "float" }
 
 	},
@@ -79,30 +79,38 @@ module.exports = THREE.RGBShiftShader = {
 
 			"vec2 q = vec2(0.0);",
 			"float scale = 8.0;",
-			"q.x = fbm( vUv * scale );",
-			"q.y = fbm( vUv * scale - vec2(1.0));",
+			"vec2 stretchUV = vUv * vec2(aspect, 1.0);",
+			"q.x = fbm( stretchUV * scale);",
+			"q.y = fbm( stretchUV * scale - vec2(1.0));",
 
 			"vec2 r = vec2(0.0);",
-	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time);",
+	    "r.x = fbm( vUv + 1.0 * q + vec2(0.5, 0.25) + 0.05 * u_time + 52.7);",
 	    "r.y = fbm( vUv + 1.0 * q + vec2(0.25, 0.5) + 0.025 * u_time);",
 
 			"vec2 position = vUv * vec2(aspect, 1.0);",
 			"position -= mouse * vec2(aspect, 1.0);",
-			"float mask = length(position) * 4.0;",
-			"mask = smoothstep(-0.2, 1.0, mask);",
+			"float mask = length(position) * 3.0;",
+			"mask = smoothstep(-0.1, 1.0, mask);",
+
+			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
+			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+
+			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
+			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
+			"float staticMask = length(staticPos) * 6.0 * distFromCenter;",
+			"staticMask = smoothstep(-0.4, 1.0, staticMask);",
+
+			"mask = min(mask, staticMask);",
 
 			"float offset = fbm(vUv + r * (mask + 0.1));",
 			"offset = offset * 2.0 - 1.0;",
 			"offset *= mask + 0.4;",
-			"gl_FragColor = vec4(vec3(offset), 1.0);",
-			"gl_FragColor = vec4(vec3(mask), 1.0);",
-			"offset *= 0.05;",
+			"gl_FragColor = vec4(vec3(abs(offset) * 2.0), 1.0);",
+			"offset *= 0.05 * 1.0;",
 			"vec4 cr = texture2D(tDiffuse, vUv + offset * 1.25);",
 			"vec4 cga = texture2D(tDiffuse, vUv + offset);",
 			"vec4 cb = texture2D(tDiffuse, vUv + offset * 0.75);",
 			"gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);",
-
-
 
 		"}"
 

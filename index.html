@@ -9,28 +9,24 @@
 
     <script src="vendors/js/jquery.min.js"></script>
     <script src="vendors/js/jquery.fullpage.min.js"></script>
-
-    <script type="text/javascript" src="vendors/js/processing.js"></script>
-
-    <script src="./front/components/aframe.min.js"></script>
+    <script src="vendors/js/processing.js"></script>
   </head>
   <body>
 
     <div id="fullpage">
 
         <div class="section active">
-          <div class="touch"></div>
+          <!-- <div class="touch"></div> -->
+          <div class="about" style="pointer-events: none;"></div>
+          <div class="arrow">
+            <i onclick="nextSlide()" class="icon-down-open icon arrow"></i>
+          </div>
           <iframe id="iframe" src="./front/index.html"></iframe>
-          <!--<a-scene>
-            <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-            <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-            <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-            <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-            <a-sky color="#ECECEC"></a-sky>
-          </a-scene>-->
         </div>
 
         <div class="section">
+          <div class="corner left"></div>
+          <div class="corner right"></div>
           <div class="about">
             <div class="about_container">
               <h1 class="about">About</h1>
@@ -49,18 +45,18 @@
         <div class="section">
           <div class="noise"></div>
 
-          <div class="realtime">
-            <div class="button_wrapper">
-              <a href="prerender" class="button realtime" type="button">&nbsp;Real|time&raquo;</a>
-            </div>
-            <img class="gif" src="./resources/img/bg_6.JPG" style="object-fit: cover;">
-          </div>
-
           <div class="offline">
             <div class="button_wrapper">
               <a href="prerender" class="button offline" type="button">&nbsp;Pre|render&raquo;</a>
             </div>
             <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0"></canvas>
+          </div>
+
+          <div class="realtime">
+            <div class="button_wrapper">
+              <a href="prerender" class="button realtime" type="button">&nbsp;Real|time&raquo;</a>
+            </div>
+            <img class="gif" src="./resources/img/bg_6.JPG" style="object-fit: cover;">
           </div>
 
         </div>
@@ -99,15 +95,17 @@
 
     <script>
       $(document).ready(function() {
-        // Colors
-        const colors = { Even: { Normal: '#ccc', Hover: '#fff'}, Odd: { Normal: 'rgb(60, 144, 70)', Hover: '#fff'} };
+        // Init
+        var loadIdx = 0;
+        //const colors = { Even: { Normal: '#ccc', Hover: '#fff'}, Odd: { Normal: 'rgb(60, 144, 70)', Hover: '#fff'} };
 
         $('#fullpage').fullpage({
           navigation: true,
+          anchors: ['front', 'about', 'work', 'contact'],
           navigationTooltips: ['Front', 'About', 'Work', 'Contact'],
 
           // Scrolling
-          keyboardScrolling: false,
+          //keyboardScrolling: false,
 
           // Events
           onLeave: function(index, nextIndex, direction) {
@@ -123,7 +121,7 @@
               }*/
             }
 
-            const tips = $('#fp-nav').find('.fp-tooltip');
+            /*const tips = $('#fp-nav').find('.fp-tooltip');
             const span = $('#fp-nav').find('span');
 
             if (nextIndex % 2 == 0) {
@@ -134,17 +132,22 @@
               tips.addClass('special');
               tips.css('color', colors.Odd.Normal);
               span.css('cssText', 'background:' + colors.Odd.Normal + '!important;');
-            }
+            }*/
           },
 
           afterLoad: function(anchorLink, index) {
+            if (index == 1 && loadIdx == 0) {
+              const init = $('#fp-nav').find('li').eq(index - 1).find('div');
+              init.addClass('underline');
+              loadIdx += 1;
+            }
             if (index === 4) {
               animClip();
             }
           }
         });
 
-        $.fn.fullpage.setMouseWheelScrolling(false);
+        //$.fn.fullpage.setMouseWheelScrolling(false);
       });
 
       // Mobile Check
@@ -153,7 +156,10 @@
       	this.fullVersion = false;
       }
 
-      //setTimeout(animClip, 1000);
+      function nextSlide() {
+        $.fn.fullpage.moveSectionDown();
+      };
+
       function animClip() {
         $('.profile').css('top', '0');
         $('.border').css('height', '65vmin');
