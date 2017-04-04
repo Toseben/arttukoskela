@@ -79,7 +79,7 @@ div.offline {
   border-color : #ba973d;
   border-width : 0 0 0 10px;
   border-style : solid;
-  background-image : url('../img/bg_work.JPG');
+  background-image : url('../img/bg_work.jpg');
   background-size: cover;
 }
 
@@ -147,7 +147,7 @@ p.contact:hover {
   width            : 100%;
   height           : 100%;
   opacity          : 0.75;
-  background-image : url('../img/bg_contact.JPG');
+  background-image : url('../img/bg_contact.jpg');
   background-size  : cover;
 }
 
