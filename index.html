@@ -29,7 +29,7 @@
           <div class="corner right"></div>
           <div class="about">
             <div class="about_container">
-              <h1 class="about">About</h1>
+              <h1 class="about_text">About</h1>
               <p class="about">Flannel cardigan franzen glossier, roof party tumblr lumbersexual. Bicycle
                 rights distillery offal, cliche 8-bit food truck craft beer 90's next level
                 banjo fanny pack semiotics austin. Kitsch tacos raclette wayfarers pickled,
@@ -45,18 +45,17 @@
         <div class="section">
           <div class="noise"></div>
 
-          <div class="offline">
-            <div class="button_wrapper">
-              <a href="prerender" class="button offline" type="button">&nbsp;Pre|render&raquo;</a>
-            </div>
-            <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0"></canvas>
-          </div>
-
           <div class="realtime">
             <div class="button_wrapper">
-              <a href="prerender" class="button realtime" type="button">&nbsp;Real|time&raquo;</a>
+              <a href="prerender" class="button realtime" type="button">&nbsp;Real&#124;time&raquo;</a>
             </div>
-            <img class="gif" src="./resources/img/bg_6.JPG" style="object-fit: cover;">
+            <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0; z-index: -1"></canvas>
+          </div>
+
+          <div class="offline">
+            <div class="button_wrapper">
+              <a href="prerender" class="button offline" type="button">&nbsp;Pre&#124;render&raquo;</a>
+            </div>
           </div>
 
         </div>
@@ -97,15 +96,10 @@
       $(document).ready(function() {
         // Init
         var loadIdx = 0;
-        //const colors = { Even: { Normal: '#ccc', Hover: '#fff'}, Odd: { Normal: 'rgb(60, 144, 70)', Hover: '#fff'} };
-
         $('#fullpage').fullpage({
           navigation: true,
           anchors: ['front', 'about', 'work', 'contact'],
           navigationTooltips: ['Front', 'About', 'Work', 'Contact'],
-
-          // Scrolling
-          //keyboardScrolling: false,
 
           // Events
           onLeave: function(index, nextIndex, direction) {
@@ -113,26 +107,6 @@
             const prev = $('#fp-nav').find('li').eq(index - 1).find('div');
             next.addClass('underline');
             prev.removeClass('underline');
-            if (nextIndex === 4) {
-              //console.log('moi');
-              /*const iframes = document.querySelectorAll('iframe');
-              for (var i = 0; i < iframes.length; i++) {
-                  iframes[i].parentNode.removeChild(iframes[i]);
-              }*/
-            }
-
-            /*const tips = $('#fp-nav').find('.fp-tooltip');
-            const span = $('#fp-nav').find('span');
-
-            if (nextIndex % 2 == 0) {
-              tips.removeClass('special');
-              tips.css('color', colors.Even.Normal);
-              span.css('cssText', 'background:' + colors.Even.Normal + '!important;');
-            } else {
-              tips.addClass('special');
-              tips.css('color', colors.Odd.Normal);
-              span.css('cssText', 'background:' + colors.Odd.Normal + '!important;');
-            }*/
           },
 
           afterLoad: function(anchorLink, index) {
@@ -146,8 +120,6 @@
             }
           }
         });
-
-        //$.fn.fullpage.setMouseWheelScrolling(false);
       });
 
       // Mobile Check
@@ -165,6 +137,13 @@
         $('.border').css('height', '65vmin');
         $('.container').css('-webkit-clip-path', 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)');
         $('.border').css('-webkit-clip-path', 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)');
+
+        // Make Anim Snappier After
+        setTimeout(function() {
+          $('.border').css('transition', '0.25s ease-in-out');
+          $('.container').css('transition', '0.25s ease-in-out');
+          $('.profile').css('transition', '0.25s ease-in-out');
+        }, 1000);
       }
 
       window.addEventListener('resize', function(){

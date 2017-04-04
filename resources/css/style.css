@@ -15,23 +15,22 @@
 }
 
 #fp-nav ul li {
-  margin-top : calc(4px + 1.75vmin) !important;
+  margin-top : calc(4px + 1.75vmin);
 }
 
-#fp-nav ul li a.active span,
-#fp-nav ul li a span {
+#fp-nav ul li a.active,
+#fp-nav ul li a {
   visibility : hidden;
 }
 
 #fp-nav ul li .fp-tooltip {
-  right          : calc(4px + 1.75vmin) !important;
+  right          : calc(4px + 1.75vmin);
   width          : auto;
   color          : #ccc;
   opacity        : 1;
   text-transform : uppercase;
   font-size      : calc(10px + 1vmin);
   font-weight    : 400;
-  transition     : 1s;
 }
 
 #fp-nav ul li .fp-tooltip:after {
@@ -45,24 +44,8 @@
   transition : 0.25s;
 }
 
-#fp-nav ul li .fp-tooltip.special:after {
-  content    : '';
-  display    : block;
-  width      : 100%;
-  height     : 1px;
-  margin     : 4px auto;
-  background : rgb(60, 144, 70);
-  transform  : scaleX(0);
-  transition : 0.25s;
-}
-
 #fp-nav ul li .fp-tooltip:hover:after {
   transform : scaleX(1);
-}
-
-#fp-nav ul li .fp-tooltip.special:hover:after {
-  background : rgb(60, 144, 70);
-  transform  : scaleX(1);
 }
 
 #fp-nav ul li .fp-tooltip.underline:after {
@@ -72,7 +55,7 @@
 iframe {
   width        : 100%;
   height       : 100%;
-  border-width : 0px;
+  border-width : 0;
 }
 
 .touch {
@@ -84,18 +67,20 @@ iframe {
 }
 
 div.realtime {
+  width  : 50%;
+  height : 100%;
+  float  : left;
+}
+
+div.offline {
   width        : 50%;
   height       : 100%;
   float        : left;
   border-color : #ba973d;
   border-width : 0 0 0 10px;
   border-style : solid;
-}
-
-div.offline {
-  width  : 50%;
-  height : 100%;
-  float  : left;
+  background-image : url('../img/bg_work.JPG');
+  background-size: cover;
 }
 
 h1.work {
@@ -141,7 +126,7 @@ p.contact:hover {
 #profile {
   display  : block;
   position : relative;
-  left     : 0px;
+  left     : 0;
 }
 
 /* CONTACT */
@@ -162,7 +147,7 @@ p.contact:hover {
   width            : 100%;
   height           : 100%;
   opacity          : 0.75;
-  background-image : url('../img/bg_scale.JPG');
+  background-image : url('../img/bg_contact.JPG');
   background-size  : cover;
 }
 
@@ -236,12 +221,13 @@ p.text {
   color             : #ccc;
   text-align        : center;
   text-transform    : uppercase;
-  font-size         : calc(6px + 1vmin);
+  font-size         : calc(4px + 1.2vmin);
   letter-spacing    : 2px;
+  -moz-transform    : translateY(-50%);
   -ms-transform     : translateY(-50%);
+  -o-transform      : translateY(-50%);
   -webkit-transform : translateY(-50%);
   transform         : translateY(-50%);
-  transition        : 0.25s;
 }
 
 p.text:hover {
@@ -280,7 +266,7 @@ li {
   margin     : 0 calc(1vw - 4px);
   color      : #ccc;
   font-size  : 4vmin;
-  transition : 0.25s;
+  transition : color 0.25s;
 }
 
 .icon:hover {
@@ -288,11 +274,11 @@ li {
 }
 
 div.arrow {
-  position   : absolute;
-  bottom     : 2.5vmin;
-  width      : 100%;
-  height     : 10vmin;
-  text-align : center;
+  position       : absolute;
+  bottom         : 2.5vmin;
+  width          : 100%;
+  height         : 10vmin;
+  text-align     : center;
   pointer-events : none;
 }
 
@@ -327,28 +313,26 @@ div.about:before {
   background : rgb(148, 112, 54);
 }
 
-div.corner {
-  background: #202020;
-  width: 33vmin;
-  height: 33vmin;
-  position: absolute;
+.corner {
+  position   : absolute;
+  width      : 33vmin;
+  height     : 33vmin;
+  background : #202020;
 }
 
-div.corner.left {
-  top: 0;
-  left: 0;
+.corner.left {
+  top  : 0;
+  left : 0;
   -webkit-clip-path: polygon(100% 0, 0 0, 0 100%);
-  clip-path: polygon(100% 0, 0 0, 0 100%);
 }
 
-div.corner.right {
-  bottom: 0;
-  right: 0;
+.corner.right {
+  right  : 0;
+  bottom : 0;
   -webkit-clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
 
-h1.about {
+.about_text {
   display        : block;
   margin         : 175px 0 0 0;
   padding        : 10px 0;
@@ -367,18 +351,7 @@ p.about {
   letter-spacing : 2px;
 }
 
-/* OFFLINE */
-
-img.gif {
-  top     : 0;
-  left    : 0;
-  width   : 100%;
-  height  : 100%;
-  margin  : 0;
-  padding : 0;
-}
-
-div.noise {
+.noise {
   z-index           : 1;
   position          : absolute;
   top               : 0;
@@ -391,9 +364,9 @@ div.noise {
   background-size   : 0.5vh;
 }
 
-div.button_wrapper {
+.button_wrapper {
   position   : relative;
-  height     : 0%;
+  height     : 0;
   text-align : center;
 }
 
@@ -408,18 +381,20 @@ a.button {
   border-width     : 2px;
   border-style     : solid;
   border-radius    : 2px;
+  background-color : rgb(255, 255, 255);
   background-color : rgba(255, 255, 255, 0.55);
   text-decoration  : none;
   text-transform   : uppercase;
   font-size        : calc(10px + 2vmin);
   font-weight      : 300;
   letter-spacing   : 14px;
-  transition       : 0.25s linear;
+  transition       : color 0.25s linear, border-color 0.25s linear, background-color 0.25s linear;
 }
 
 a.button:hover {
   color            : #ccc;
   border-color     : #000;
+  background-color : rgb(0, 0, 0);
   background-color : rgba(0, 0, 0, 1.0);
   cursor           : pointer;
 }
@@ -436,11 +411,11 @@ a.button:hover {
     border-width : 0;
   }
 
-  div.offline {
+  div.realtime {
     top : 50%;
   }
 
-  div.realtime {
+  div.offline {
     border-width : 0 0 10px 0;
   }
 
