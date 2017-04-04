@@ -14,7 +14,7 @@
   height           : 100%;
   opacity          : 1.0;
   background-color : #202020;
-  z-index          : 1000;
+  z-index          : 10;
   transition       : opacity 2.0s ease-in-out;
 }
 
@@ -294,6 +294,7 @@ div.about_container {
   width  : 350px;
   height : 100%;
   margin : 0 auto;
+  overflow: hidden;
 }
 
 div.about {
