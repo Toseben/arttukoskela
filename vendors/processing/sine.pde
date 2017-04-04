@@ -10,7 +10,7 @@ void setup() {
   } else {
     size( $(window).width() * 0.5, $(window).height() * 1.0 );
   }
-  frameRate(30);
+  frameRate(60);
   rectMode(CENTER);
   smooth();
 

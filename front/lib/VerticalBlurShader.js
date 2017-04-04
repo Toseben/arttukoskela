@@ -41,7 +41,7 @@ module.exports = THREE.VerticalBlurShader = {
 			"mask = smoothstep(0.0, 1.0, mask);",
 
 			"float distFromCenter = distance(vec2(0.5, 0.5), mouse);",
-			"distFromCenter = 1.5 - distFromCenter * 2.0;",
+			"distFromCenter = 1.25 - distFromCenter * 2.0;",
 
 			"vec2 staticPos = vUv * vec2(aspect, 1.0);",
 			"staticPos -= vec2(0.5, 0.5) * vec2(aspect, 1.0);",
