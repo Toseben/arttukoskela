@@ -19,6 +19,20 @@
   pointer-events: none;
 }
 
+.section {
+  overflow: hidden;
+}
+
+.gif {
+  visibility: hidden;
+  position: absolute;
+  z-index: 1000;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
 #fp-nav {
   top    : 8px;
   right  : 0 !important;

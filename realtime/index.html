@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Real Time Projects</title>
+    <meta name=”description” content="Portfolio of realtime interactive projects Arttu Koskela has worked on while consulting">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../vendors/icon/css/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="work">
+
+      <div class="arrow">
+        <a href="../../#contact"><i class="icon-home-1 icon arrow"></i></a>
+      </div>
+
+      <a target="_blank" href="#" class="work-item">
+        <img src="img/spinningglobe.jpg" alt="Spinning Globe: Data Visualization">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Spinning Globe</h1>
+            <p>Data Visualization</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="https://toseben.github.io/envPortal/" class="work-item">
+        <img src="img/envportal.jpg" alt="Virtual House Tour: Interactive VR Experience">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Virtual House Tour</h1>
+            <p>Interactive VR Experience</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="http://www.tattoosim.com/" class="work-item">
+        <img src="img/tattoosim.jpg" alt="Tattoo Simulator: Custom Design Solution">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Tattoo Simulator</h1>
+            <p>Custom Design Solution</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="../../#contact" class="work-item">
+        <img src="img/soon_2.jpg" alt="New Project Coming Soon">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Coming Soon</h1>
+            <p>New Project</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="../../#contact" class="work-item">
+        <img src="img/soon_2.jpg" alt="New Project Coming Soon">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Coming Soon</h1>
+            <p>New Project</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="../../#contact" class="work-item">
+        <img src="img/soon_1.jpg" alt="New Project Coming Soon">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Coming Soon</h1>
+            <p>New Project</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="../../#contact" class="work-item">
+        <img src="img/soon_1.jpg" alt="New Project Coming Soon">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Coming Soon</h1>
+            <p>New Project</p>
+          </div>
+        </div>
+      </a>
+
+      <a target="_blank" href="../../#contact" class="work-item">
+        <img src="img/soon_2.jpg" alt="New Project Coming Soon">
+        <div class="overlay-wrap">
+          <div class="overlay-text">
+            <h1>Coming Soon</h1>
+            <p>New Project</p>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <script>
+
+      $(document).ready(function() {
+        // Resize Window
+        var width = window.innerWidth;
+        const threshold = 767;
+        window.addEventListener('resize', function(){
+          width = window.innerWidth;
+          $(window).trigger('scroll');
+        });
+
+        $(window).on('scroll', function() {
+          // Get Each Div
+          $('.overlay-wrap').each(function(index) {
+            var thisTop = $(this).offset().top - $(window).scrollTop();
+            thisTop = Math.abs(thisTop - $(this).height());
+            // Change Green If In Middle
+            if (thisTop < $(this).height() * 0.5 && width <= threshold ) {
+              $(this).css('background', 'rgba(186, 151, 61, 0.75)');
+            } else {
+              $(this).css('background', 'rgba(30, 30, 30, 0.125)');
+            }
+          });
+        });
+        $(window).trigger('scroll');
+      });
+    </script>
+
+  </body>
+</html>

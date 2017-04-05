@@ -87,7 +87,7 @@
           var xDelta = (event.clientX / width - 0.5);
           var yDelta = (event.clientY / height - 0.5);
           var currentPos = entity.getAttribute('position');
-          entity.parentElement.setAttribute('rotation', { x: xDelta * 5, y: yDelta * 5, z: 0 });
+          entity.parentElement.setAttribute('rotation', { x: yDelta * 5, y: xDelta * 5, z: 0 });
         }
 
         window.addEventListener('resize', function() {

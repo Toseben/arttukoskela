@@ -35,11 +35,10 @@
     <div id="fullpage">
 
         <div class="section active">
+          <img class="gif" src="./resources/vid/frontSeq.gif" alt="" />
+
           <div class="about" style="pointer-events: none;"></div>
-          <!-- <div class="arrow">
-            <i onclick="nextSlide()" class="icon-down-open icon arrow"></i>
-          </div> -->
-          <iframe id="iframe" src="./front/index.html"></iframe>
+          <iframe id="iframe" src="#"></iframe>
         </div>
 
         <div class="section">
@@ -62,14 +61,14 @@
 
           <div class="realtime">
             <div class="button_wrapper">
-              <a href="vfx" class="button realtime" type="button">&nbsp;Real&#124;time&raquo;</a>
+              <a target="_blank" href="realtime" class="button realtime" type="button">&nbsp;Real&#124;time&raquo;</a>
             </div>
             <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0; z-index: 0"></canvas>
           </div>
 
           <div class="offline">
             <div class="button_wrapper">
-              <a href="vfx" class="button offline" type="button">&nbsp;Visual&#124;FX&raquo;</a>
+              <a target="_blank" href="vfx" class="button offline" type="button">&nbsp;Visual&#124;FX&raquo;</a>
             </div>
           </div>
 
@@ -141,7 +140,16 @@
       // Mobile Check
       this.fullVersion = true;
       if (/Android|webOS|iPhone|iPad|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/i.test(navigator.userAgent)) {
-      	this.fullVersion = false;
+        this.fullVersion = false;
+        $('.gif').css('visibility', 'visible');
+        $(window).ready(function() {
+          loaded();
+        })
+      }
+
+      if (this.fullVersion) {
+        var iframe = $('iframe');
+        iframe.attr('src', "./front/index.html");
       }
 
       function animClip() {
