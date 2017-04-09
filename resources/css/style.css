@@ -34,9 +34,11 @@
 }
 
 #fp-nav {
-  top    : 8px;
+  width: 0;
+  top    : 0;
   right  : 0 !important;
   margin : 0 !important;
+  margin-right : calc(4px + 1.75vmin) !important;
 }
 
 #fp-nav ul li {
@@ -147,7 +149,6 @@ p.contact:hover {
 }
 
 /* CONTACT */
-
 .contact {
   position          : relative;
   width             : 100%;
@@ -188,9 +189,9 @@ p.contact:hover {
 }
 
 .container {
-  width            : calc(100% - 20px);
-  height           : calc(100% - 20px);
-  margin           : 10px;
+  width            : calc(100% - 3vmin);
+  height           : calc(100% - 3vmin);
+  margin           : 1.5vmin;
   background-image : url('../img/checker.png');
 }
 
@@ -290,21 +291,7 @@ li {
   color : #fff;
 }
 
-/*div.arrow {
-  position       : absolute;
-  bottom         : 2.5vmin;
-  width          : 100%;
-  height         : 10vmin;
-  text-align     : center;
-  pointer-events : none;
-}
-
-i.arrow {
-  font-size : 5vmin;
-}*/
-
 /* ABOUT */
-
 div.about_container {
   width  : 350px;
   height : 100%;
@@ -342,18 +329,21 @@ div.about:before {
   top  : 0;
   left : 0;
   -webkit-clip-path: polygon(100% 0, 0 0, 0 100%);
+  clip-path: polygon(100% 0, 0 0, 0 100%);
 }
 
 .corner.right {
   right  : 0;
   bottom : 0;
   -webkit-clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
 }
 
 .about_text {
   display        : block;
   margin         : 0;
   margin-top     : calc(75px + 10vh);
+  margin-top     : 20vh;
   padding        : 10px 0;
   color          : #282828;
   text-align     : left;
@@ -420,6 +410,7 @@ a.button:hover {
 
 @media only screen
        and (max-width : 1024px) {
+
   div.offline,
   div.realtime {
     position     : absolute;
@@ -439,8 +430,85 @@ a.button:hover {
   }
 
   a.button {
-    top : 20vh;
+    top : 25vh;
+    padding: 4vmin 2vmin !important;
   }
+
+  #canvas0 {
+    height: 50vh;
+    width: 100%;
+  }
+
+}
+
+@media only screen
+       and (max-device-width : 1024px) {
+
+  div.offline {
+    border-width : 0 0 5px 0;
+  }
+
+  div.about_container {
+    width  : 75vw;
+  }
+
+  .about_text {
+    font-size      : 2.5em;
+  }
+
+  p.about {
+    font-size      : 3.25vmin;
+    line-height    : 5vmin;
+    letter-spacing : 1.5px;
+  }
+
+  .footer {
+    height   : 8vmin;
+  }
+
+  .icon {
+    top        : 1vmin;
+    margin     : 0 calc(1vw - 4px);
+    font-size  : 5vmin;
+  }
+
+  p.text {
+    margin            : 0px;
+    font-size         : calc(4px + 1vmin);
+    letter-spacing    : 1.25px;
+  }
+
+  p.text:after {
+    margin     : 0px auto;
+  }
+
+  a.button {
+    padding          : 18px 0;
+    border-width     : 1px;
+    font-size        : calc(8px + 1.5vmin);
+    font-weight: 400;
+    letter-spacing   : 10px;
+    top: 45vmins;
+  }
+
+}
+
+@media only screen
+       and (max-device-width : 1024px)
+       and (orientation: landscape) {
+
+     div.about_container {
+       width  : 50vw;
+     }
+
+   .about_text {
+     margin-top     : 5vmin;
+   }
+
+   p.about {
+     letter-spacing : 1.5px;
+   }
+
 }
 
 /* LOADING */

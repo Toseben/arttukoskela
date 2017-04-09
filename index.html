@@ -2,9 +2,11 @@
 <html>
   <head>
     <title>Arttu Koskela</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name=”description” content="I'm a consulting interactive graphics developer who makes high quality responsive design solutions. / A-Frame / Three.js / WebGL / Houdini /">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="./resources/img/favicon_alt.png"/>
     <link rel="stylesheet" type="text/css" href="vendors/css/jquery.fullpage.min.css"/>
     <link rel="stylesheet" type="text/css" href="vendors/icon/css/icon.css"/>
     <link rel="stylesheet" type="text/css" href="resources/css/style.css"/>
@@ -61,14 +63,14 @@
 
           <div class="realtime">
             <div class="button_wrapper">
-              <a target="_blank" href="realtime" class="button realtime" type="button">&nbsp;Real&#124;time&raquo;</a>
+              <a target="_blank" href="realtime" class="button realtime" type="button">&nbsp;Realtime&raquo;</a>
             </div>
             <canvas id="canvas0" data-processing-sources="vendors/processing/sine.pde" style="margin: 0; padding: 0; z-index: 0"></canvas>
           </div>
 
           <div class="offline">
             <div class="button_wrapper">
-              <a target="_blank" href="vfx" class="button offline" type="button">&nbsp;Visual&#124;FX&raquo;</a>
+              <a target="_blank" href="vfx" class="button offline" type="button">&nbsp;VisualFX&raquo;</a>
             </div>
           </div>
 
@@ -108,6 +110,10 @@
 
     <script>
       $(document).ready(function() {
+        // Disable Clip On Mozilla
+        if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+          $('.corner').css('display', 'none');
+        }
         // Init
         window.isParent = true;
         var loadIdx = 0;

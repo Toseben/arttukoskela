@@ -1,5 +1,11 @@
+if ($(window).width() > 1024) {
+  float mult = 72;
+} else {
+  float mult = 12;
+}
+
 SinWave sinWave;
-SinWave[] sinWaves = new SinWave[50];
+SinWave[] sinWaves = new SinWave[mult];
 color[] colorOptions = {
   color(242, 242, 242, 100), color(193, 166, 54, 100), color(125, 92, 7, 100), color(5, 219, 242, 100), color(89, 75, 70, 100)
 };
@@ -10,7 +16,7 @@ void setup() {
   } else {
     size( $(window).width() * 0.5, $(window).height() * 1.0 );
   }
-  frameRate(60);
+  frameRate(30);
   rectMode(CENTER);
   smooth();
 
