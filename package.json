@@ -7,7 +7,8 @@
     "front": "budo front/index.js:bundle.js -d front --live --port 3000",
     "real-time": "budo real-time/index.js:bundle.js -d real-time --live --port 3000",
     "pre-render": "budo pre-render/index.js:bundle.js -d pre-render --live --port 3000 -- -t [ glslify ]",
-    "ghpages": "ghpages Toseben/arttukoskela"
+    "ghpages": "ghpages Toseben/arttukoskela",
+    "ugly": "uglify test/*"
   },
   "browserify": {
     "transform": [
