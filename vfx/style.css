@@ -91,43 +91,6 @@ p {
   transition         : all .4s ease-in-out;
 }
 
-@media only screen
-       and (max-width : 767px) {
-  .work-item {
-    width : 100%;
-  }
-
-  .overlay-text h1 {
-    font-size : calc(6px + 2vmin);
-  }
-
-  .overlay-text p {
-    font-size : calc(6px + 1vmin);
-  }
-
-  .overlay-text {
-    top         : auto;
-    bottom      : 25px;
-    margin-left : 0px;
-    padding     : 0 25px;
-    opacity     : 1;
-  }
-
-  .work-item .overlay-wrap:hover .overlay-text {
-    margin-left : 0px;
-    padding     : 0 50px;
-  }
-
-  .overlay-wrap:hover h1,
-  .overlay-wrap:hover p {
-    color              : #fff;
-    -moz-transition    : all .4s ease-in-out;
-    -o-transition      : all .4s ease-in-out;
-    -webkit-transition : all .4s ease-in-out;
-    transition         : all .4s ease-in-out;
-  }
-}
-
 div.arrow {
   position       : absolute;
   width          : 10vmin;
@@ -164,4 +127,53 @@ i.arrow:after {
 
 i.arrow:hover:after {
   transform : scaleX(0.75);
+}
+
+@media only screen
+       and (max-width : 767px) {
+  .work-item {
+    width : 100%;
+  }
+
+  .overlay-text h1 {
+    font-size : calc(6px + 2vmin);
+  }
+
+  .overlay-text p {
+    font-size : calc(6px + 1vmin);
+  }
+
+  .overlay-text {
+    top         : auto;
+    bottom      : 25px;
+    margin-left : 0px;
+    padding     : 0 25px;
+    opacity     : 1;
+  }
+
+  .work-item .overlay-wrap:hover .overlay-text {
+    margin-left : 0px;
+    padding     : 0 50px;
+  }
+
+  .overlay-wrap:hover h1,
+  .overlay-wrap:hover p {
+    color              : #fff;
+    -moz-transition    : all .4s ease-in-out;
+    -o-transition      : all .4s ease-in-out;
+    -webkit-transition : all .4s ease-in-out;
+    transition         : all .4s ease-in-out;
+  }
+
+  div.arrow {
+    width          : 15vmin;
+    height         : 15vmin;
+  }
+
+  i.arrow {
+    font-size : 10vmin;
+    line-height: 15vmin;
+    transition: 0.25s;
+    color: #fff;
+  }
 }

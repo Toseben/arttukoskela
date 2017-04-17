@@ -1,8 +1,4 @@
-if ($(window).width() > 1024) {
-  float mult = 72;
-} else {
-  float mult = 12;
-}
+float mult = 128;
 
 SinWave sinWave;
 SinWave[] sinWaves = new SinWave[mult];
