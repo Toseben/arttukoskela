@@ -5,12 +5,13 @@
     <meta name=”description” content="Interactive shader program created with A-Frame, Three.js and WebGL for the front page intro splash of Arttu Koskela's freshly updated front page.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aframe/0.5.0/aframe.min.js"></script>
+  </head>
+  <body>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.0.0/nunjucks.min.js"></script>
     <script src="https://unpkg.com/aframe-template-component@^3.2.1/dist/aframe-template-component.min.js"></script>
     <script src="https://rawgit.com/ngokevin/aframe-animation-component/master/dist/aframe-animation-component.min.js"></script>
     <script src="bundle.min.js"></script>
-  </head>
-  <body>
 
     <script>
 
@@ -65,7 +66,9 @@
       init: function() {
 
         this.el.sceneEl.addEventListener('loaded', function() {
-          window.parent.loaded();
+          if (window.parent.loaded) {
+            window.parent.loaded();
+          }
         });
 
         const entity = this.el;
