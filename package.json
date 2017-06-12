@@ -11,7 +11,6 @@
     "concat": "concat -o ./resources/js/scripts.js ./assets/js/jquery.min.js ./assets/js/jquery.fullpage.min.js ./assets/js/script.js",
     "concat-css": "concat -o ./resources/css/styles.css ./assets/css/font.css ./assets/css/icon.css ./assets/css/jquery.fullpage.min.css ./assets/css/style.css",
     "min": "uglifyjs ./resources/js/scripts.js -o ./resources/js/scripts.min.js"
-    "min-css": "uglifycss ./resources/css/styles.css > ./resources/css/styles.min.css"
   },
   "browserify": {
     "transform": [

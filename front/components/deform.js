@@ -74,6 +74,7 @@ AFRAME.registerSystem('deform', {
     // Render Composer
 		if (sceneEl.getAttribute('fullVersion') === "true") {
     	this.bind();
+      console.log(this);
 		}
 
   },
