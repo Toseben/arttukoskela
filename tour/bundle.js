@@ -121994,7 +121994,7 @@ var App = function (_Component) {
               _react2.default.createElement(
                 'p',
                 { className: 'stat' },
-                '130 000\u20AC'
+                '130.000\u20AC'
               )
             ),
             _react2.default.createElement(
