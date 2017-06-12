@@ -121967,7 +121967,7 @@ var App = function (_Component) {
           _react2.default.createElement(
             'h1',
             { className: 'company' },
-            'Company Name'
+            'Kiinteistönvälitys Mauri Ahvalo'
           ),
           _react2.default.createElement('div', { className: 'banner' }),
           _react2.default.createElement('div', { className: 'logo' })
@@ -121994,7 +121994,7 @@ var App = function (_Component) {
               _react2.default.createElement(
                 'p',
                 { className: 'stat' },
-                '130000\u20AC/kk'
+                '130 000\u20AC'
               )
             ),
             _react2.default.createElement(
