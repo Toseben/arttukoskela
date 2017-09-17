@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Points Logo</title>
+    <style>
+
+      body {
+        background-color: #000000;
+        margin: 0px;
+        overflow: hidden;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="./lib/three.min.js"></script>
+
+    <script src="./lib/postprocessing/EffectComposer.js"></script>
+    <script src="./lib/postprocessing/RenderPass.js"></script>
+    <script src="./lib/postprocessing/MaskPass.js"></script>
+    <script src="./lib/postprocessing/ShaderPass.js"></script>
+    <script src="./lib/shaders/CopyShader.js"></script>
+    <script src="./lib/shaders/FXAAShader.js"></script>
+    <script src="./lib/shaders/ConvolutionShader.js"></script>
+    <script src="./lib/shaders/LuminosityHighPassShader.js"></script>
+    <script src="./lib/postprocessing/UnrealBloomPass.js"></script>
+
+    <script>
+
+			var group;
+			var container;
+			var particlesData = [];
+			var camera, scene, renderer;
+			var positions, colors;
+			var particles;
+			var pointCloud;
+			var particlePositions;
+			var linesMesh;
+      var raycaster, mouse, plane;
+
+      var effectFXAA, bloomPass, renderScene;
+      var composer;
+
+      var params = {
+				exposure: 1.5,
+				bloomStrength: 2.0,
+				bloomThreshold: 0.1,
+				bloomRadius: 0.75
+			};
+
+			var particleCount = 600;
+      var maxParticleCount = particleCount;
+			var r = 2000;
+      var yScale = 0.005;
+			var rHalf = r / 2;
+
+			var effectController = {
+				minDistance: 175 / 2,
+				limitConnections: true,
+				maxConnections: 10
+			};
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				//
+
+				camera = new THREE.PerspectiveCamera( 24, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.applyMatrix( new THREE.Matrix4().makeTranslation( -25, -150, 1700 ) );
+        camera.applyMatrix( new THREE.Matrix4().makeRotationX( -0.5 ) );
+
+				scene = new THREE.Scene();
+        scene.background = new THREE.Color( 0x111111 );
+
+				group = new THREE.Group();
+				scene.add( group );
+
+				var helper = new THREE.BoxHelper( new THREE.Mesh( new THREE.BoxGeometry( r, r * yScale, r ) ) );
+				helper.material.color.setHex( 0xff0000 );
+				helper.material.blending = THREE.AdditiveBlending;
+				helper.material.transparent = true;
+				// group.add( helper );
+
+				var segments = maxParticleCount * maxParticleCount;
+
+				positions = new Float32Array( segments * 3 );
+				colors = new Float32Array( segments * 3 );
+
+				var pMaterial = new THREE.PointsMaterial( {
+          map: new THREE.TextureLoader().load( "./img/disc.png" ),
+					color: 0x6C03FF,
+					size: 9,
+					blending: THREE.AdditiveBlending,
+					transparent: true,
+					sizeAttenuation: false
+				} );
+
+				particles = new THREE.BufferGeometry();
+        particlePositions = new Float32Array( maxParticleCount * 3 );
+        initParticlePositions = new Float32Array( maxParticleCount * 3 );
+
+				for ( var i = 0; i < maxParticleCount; i++ ) {
+
+          var sqrtCount = Math.sqrt(particleCount);
+          var posX = i % ( sqrtCount ) / sqrtCount;
+          var posZ = Math.floor(i / ( sqrtCount )) / sqrtCount;
+
+          // posX += ( Math.random() * 2 - 1 ) * 0.01;
+          // posZ += ( Math.random() * 2 - 1 ) * 0.01;
+
+          var randomHeight = Math.random() * r * 0.1;
+
+          var x = posX * r - r / 2;
+          var y = Math.random() * r * yScale - ( r * yScale / 2 );
+          // y += randomHeight;
+          var z = posZ * r - r / 2;
+
+					particlePositions[ i * 3     ] = x;
+					particlePositions[ i * 3 + 1 ] = y;
+					particlePositions[ i * 3 + 2 ] = z;
+
+          initParticlePositions[ i * 3     ] = x;
+          initParticlePositions[ i * 3 + 1 ] = y;
+          initParticlePositions[ i * 3 + 2 ] = z;
+
+					// add it to the geometry
+
+          var yVel = ( Math.random() * 2 - 1 ) * 0.05;
+					particlesData.push( {
+            velocity: new THREE.Vector3( 0, yVel, 0 ),
+            randomHeight: randomHeight,
+						numConnections: 0
+					} );
+
+				}
+
+				particles.setDrawRange( 0, particleCount );
+				particles.addAttribute( 'position', new THREE.BufferAttribute( particlePositions, 3 ).setDynamic( true ) );
+
+				pointCloud = new THREE.Points( particles, pMaterial );
+				group.add( pointCloud );
+
+				var geometry = new THREE.BufferGeometry();
+
+				geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ).setDynamic( true ) );
+				geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ).setDynamic( true ) );
+
+				geometry.computeBoundingSphere();
+
+				geometry.setDrawRange( 0, 0 );
+
+				var material = new THREE.LineBasicMaterial({
+          color: 0x6C03FF,
+          linewidth: 2,
+					vertexColors: THREE.VertexColors,
+					blending: THREE.AdditiveBlending,
+					transparent: true
+				});
+
+				linesMesh = new THREE.LineSegments( geometry, material );
+				group.add( linesMesh );
+
+				//
+
+        var geometry = new THREE.PlaneGeometry( 10000, 10000 );
+        var material = new THREE.MeshBasicMaterial({
+          color: 0xffff00,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.0
+        });
+
+        plane = new THREE.Mesh( geometry, material );
+        plane.position.y = r * yScale;
+        plane.rotation.x = THREE.Math.degToRad(90);
+        scene.add( plane );
+
+        //
+
+				renderer = new THREE.WebGLRenderer( { antialias: false } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+
+				container.appendChild( renderer.domElement );
+				window.addEventListener( 'resize', onWindowResize, false );
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+
+        //
+
+        renderScene = new THREE.RenderPass(scene, camera);
+
+        effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+		    effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
+				var copyShader = new THREE.ShaderPass(THREE.CopyShader);
+				copyShader.renderToScreen = true;
+
+        bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);//1.0, 9, 0.5, 512);
+        bloomPass.threshold = params.bloomThreshold;
+        bloomPass.strength = params.bloomStrength;
+        bloomPass.radius = params.bloomRadius;
+
+        composer = new THREE.EffectComposer(renderer);
+		    composer.setSize(window.innerWidth, window.innerHeight);
+		    composer.addPass(renderScene);
+				composer.addPass(effectFXAA);
+		    composer.addPass(bloomPass);
+				composer.addPass(copyShader);
+
+        renderer.gammaInput = true;
+        renderer.gammaOutput = true;
+			}
+
+			function onWindowResize() {
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+
+        camera.aspect = width / height;
+				camera.updateProjectionMatrix();
+
+        renderer.setSize( width, height );
+				composer.setSize( width, height );
+				effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight );
+			}
+
+      function onDocumentMouseMove( event ) {
+        event.preventDefault();
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      }
+
+			function animate() {
+
+        raycaster.setFromCamera( mouse, camera );
+        var intersects = raycaster.intersectObject( plane );
+        var intersect = ( intersects.length ) > 0 ? intersects[ 0 ] : null;
+
+				var vertexpos = 0;
+				var colorpos = 0;
+				var numConnected = 0;
+
+				for ( var i = 0; i < particleCount; i++ )
+					particlesData[ i ].numConnections = 0;
+
+				for ( var i = 0; i < particleCount; i++ ) {
+
+					// get the particle
+					var particleData = particlesData[i];
+
+					particlePositions[ i * 3     ] += particleData.velocity.x;
+					particlePositions[ i * 3 + 1 ] += particleData.velocity.y;
+					particlePositions[ i * 3 + 2 ] += particleData.velocity.z;
+
+					if ( particlePositions[ i * 3 + 1 ] < ( -rHalf * yScale ) || particlePositions[ i * 3 + 1 ] > ( rHalf * yScale ) )
+						particleData.velocity.y = -particleData.velocity.y;
+
+					if ( particlePositions[ i * 3 ] < -rHalf || particlePositions[ i * 3 ] > rHalf )
+						particleData.velocity.x = -particleData.velocity.x;
+
+					if ( particlePositions[ i * 3 + 2 ] < -rHalf || particlePositions[ i * 3 + 2 ] > rHalf )
+						particleData.velocity.z = -particleData.velocity.z;
+
+					if ( effectController.limitConnections && particleData.numConnections >= effectController.maxConnections )
+						continue;
+
+          var initPos = new THREE.Vector3( initParticlePositions[ i * 3 ], initParticlePositions[ i * 3 + 1 ], initParticlePositions[ i * 3 + 2 ] );
+          var d = initPos.distanceTo( intersect.point ) / 300.0;
+          d = Math.min( d, 1.0 );
+          var invertD = 1.0 - d;
+
+          var dirVec = new THREE.Vector3( particlePositions[ i * 3 ], particlePositions[ i * 3 + 1 ], particlePositions[ i * 3 + 2 ] );
+          dirVec.sub( intersect.point ).normalize();
+
+          var posX = particlePositions[ i * 3 ] + dirVec.x * 50.0 * invertD;
+          var posY = particlePositions[ i * 3 + 1 ];
+          var posZ = particlePositions[ i * 3 + 2 ] + dirVec.z * 50.0 * invertD;
+
+          posX = THREE.Math.lerp( posX, initParticlePositions[ i * 3 ], d * 0.25 );
+          posY = THREE.Math.lerp( posY, particlePositions[ i * 3 + 1 ], d * 0.25 );
+          posZ = THREE.Math.lerp( posZ, initParticlePositions[ i * 3 + 2 ], d * 0.25 );
+
+          particlePositions[ i * 3     ] = posX;
+          particlePositions[ i * 3 + 1 ] = posY;
+          particlePositions[ i * 3 + 2 ] = posZ;
+
+					// Check collision
+					for ( var j = i + 1; j < particleCount; j++ ) {
+
+						var particleDataB = particlesData[ j ];
+						if ( effectController.limitConnections && particleDataB.numConnections >= effectController.maxConnections )
+							continue;
+
+						var dx = particlePositions[ i * 3     ] - particlePositions[ j * 3     ];
+						var dy = particlePositions[ i * 3 + 1 ] - particlePositions[ j * 3 + 1 ];
+						var dz = particlePositions[ i * 3 + 2 ] - particlePositions[ j * 3 + 2 ];
+						var dist = Math.sqrt( dx * dx + dy * dy + dz * dz );
+
+						if ( dist < effectController.minDistance ) {
+
+							particleData.numConnections++;
+							particleDataB.numConnections++;
+
+							var alpha = 1.0 - dist / effectController.minDistance;
+              alpha = Math.pow( alpha, 0.5 );
+
+							positions[ vertexpos++ ] = particlePositions[ i * 3     ];
+							positions[ vertexpos++ ] = particlePositions[ i * 3 + 1 ];
+							positions[ vertexpos++ ] = particlePositions[ i * 3 + 2 ];
+
+							positions[ vertexpos++ ] = particlePositions[ j * 3     ];
+							positions[ vertexpos++ ] = particlePositions[ j * 3 + 1 ];
+							positions[ vertexpos++ ] = particlePositions[ j * 3 + 2 ];
+
+							colors[ colorpos++ ] = alpha;
+							colors[ colorpos++ ] = alpha;
+							colors[ colorpos++ ] = alpha;
+
+							colors[ colorpos++ ] = alpha;
+							colors[ colorpos++ ] = alpha;
+							colors[ colorpos++ ] = alpha;
+
+							numConnected++;
+						}
+					}
+				}
+
+
+				linesMesh.geometry.setDrawRange( 0, numConnected * 2 );
+				linesMesh.geometry.attributes.position.needsUpdate = true;
+				linesMesh.geometry.attributes.color.needsUpdate = true;
+
+				pointCloud.geometry.attributes.position.needsUpdate = true;
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+				var time = Date.now() * 0.001;
+
+        renderer.toneMappingExposure = Math.pow( params.exposure, 4.0 );
+				// renderer.render( scene, camera );
+        composer.render();
+			}
+
+    </script>
+  </body>
+</html>
